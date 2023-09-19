@@ -13,33 +13,33 @@
                 chrome.storage.sync.get(["apikey"], function(items){
                     if(items && items != {} && items.apikey != undefined) {
                         apikey = items.apikey;
+                        const apiUrl = 'https://api.openai.com/v1/engines/text-davinci-003/completions'; // Endpoint for ChatGPT
+                        const data = {
+                            prompt: `Parse the question and suggest the prefect answer, ${JSON.stringify(parseData(dx))} in few words`,
+                            max_tokens: 50, // Adjust the length of the generated article
+                        };
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${apiKey}`,
+                            },
+                            body: JSON.stringify(data),
+                        });
+                    
+                        if (response.ok) {
+                            const result = await response.json();
+                            const generatedText = result.choices[0].text;
+                            // generatedText.replace(/"([^"]+)"/g, '<b>$1</b>');
+                            ans.innerHTML = generatedText;
+                        }else{
+                            alert('FormGini: Invalid API Key or Balance Exhausted... please set new api key')
+                        }
                     }else{
                         alert('FormGini: Please set your API Key...');
                         // let internalUrl = chrome.runtime.getURL("views/onboarding.html");
                     }
                 });
-                const apiUrl = 'https://api.openai.com/v1/engines/text-davinci-003/completions'; // Endpoint for ChatGPT
-                const data = {
-                    prompt: `Parse the question and suggest the prefect answer, ${JSON.stringify(parseData(dx))} in few words`,
-                    max_tokens: 50, // Adjust the length of the generated article
-                };
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${apiKey}`,
-                    },
-                    body: JSON.stringify(data),
-                });
-
-                if (response.ok) {
-                    const result = await response.json();
-                    const generatedText = result.choices[0].text;
-                    // generatedText.replace(/"([^"]+)"/g, '<b>$1</b>');
-                    ans.innerHTML = generatedText;
-                }else{
-                    alert('FormGini: Invalid API Key or Balance Exhausted... please set new api key')
-                }
                 // console.log(data)
             })
             $(d[i]).children("div").append(btn);
