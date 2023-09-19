@@ -12,7 +12,7 @@
                 const apiKey = '';
                 chrome.storage.sync.get(["apikey"], async function(items){
                     if(items && items != {} && items.apikey != undefined) {
-                        apikey = items.apikey;
+                        apiKey = items.apikey;
                         const apiUrl = 'https://api.openai.com/v1/engines/text-davinci-003/completions'; // Endpoint for ChatGPT
                         const data = {
                             prompt: `Parse the question and suggest the prefect answer, ${JSON.stringify(parseData(dx))} in few words`,
